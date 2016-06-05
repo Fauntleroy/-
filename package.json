@@ -1,0 +1,33 @@
+{
+  "name": "tray-clock",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "moment": "^2.13.0",
+    "moment-timezone": "^0.5.4"
+  },
+  "devDependencies": {
+    "electron-prebuilt": "^1.2.1"
+  },
+  "scripts": {
+    "start": "electron .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Fauntleroy/tray-clock.git"
+  },
+  "keywords": [
+    "tray",
+    "taskbar",
+    "clock",
+    "osx"
+  ],
+  "author": "Timothy Kempf",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Fauntleroy/tray-clock/issues"
+  },
+  "homepage": "https://github.com/Fauntleroy/tray-clock#readme"
+}
