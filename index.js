@@ -4,6 +4,17 @@ require('moment-timezone');
 
 let tray;
 
+const openConfigurationWindow = function () {
+  const configurationWindow = new BrowserWindow({
+    resizable: false,
+    useContentSize: true
+  });
+  configurationWindow.on('close', () => {
+    console.log('test');
+  });
+  configurationWindow.loadURL('http://kempf.sexy');
+};
+
 const renderClock = function () {
   const timeString = moment().tz('Asia/Seoul').format('ddd h:mm A 🇰🇷');
   tray.setTitle(` ${timeString}`);
@@ -15,6 +26,13 @@ const initializeClock = function () {
 };
 
 const contextMenu = Menu.buildFromTemplate([
+  {
+    label: 'Settings',
+    click: openConfigurationWindow
+  },
+  {
+    type: 'separator'
+  },
   {
     label: 'Quit',
     click: () => app.quit()
