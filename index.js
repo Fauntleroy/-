@@ -1,22 +1,47 @@
-const { app, BrowserWindow, Menu, Tray } = require('electron');
+const { app, BrowserWindow, ipcMain, Menu, Tray } = require('electron');
+const _ = require('lodash');
 const moment = require('moment');
 require('moment-timezone');
+const ElectronConfig = require('electron-config');
+const trayClockConfig = new ElectronConfig({
+  defaults: {
+    format: 'ddd h:mm A',
+    timezone: 'Asia/Seoul',
+    language: 'ko'
+  }
+});
+
+let settingsWindow;
+
+ipcMain.on('settings-ready', (event) => {
+  event.sender.send('settings', trayClockConfig.store);
+});
+
+ipcMain.on('settings-update', (event, newSettings) => {
+  trayClockConfig.set(newSettings);
+});
 
 let tray;
 
-const openConfigurationWindow = function () {
-  const configurationWindow = new BrowserWindow({
+const openSettingsWindow = function () {
+  if (settingsWindow) {
+    settingsWindow.show();
+    return;
+  }
+
+  settingsWindow = new BrowserWindow({
     resizable: false,
     useContentSize: true
   });
-  configurationWindow.on('close', () => {
-    console.log('test');
+  settingsWindow.on('close', () => {
+    settingsWindow = null;
   });
-  configurationWindow.loadURL('http://kempf.sexy');
+  settingsWindow.loadURL(`file://${__dirname}/settings.html`);
 };
 
 const renderClock = function () {
-  const timeString = moment().tz('Asia/Seoul').format('ddd h:mm A 🇰🇷');
+  moment.locale(trayClockConfig.get('language'));
+  const timeString = moment().tz(trayClockConfig.get('timezone')).format(trayClockConfig.get('format'));
   tray.setTitle(` ${timeString}`);
 };
 
@@ -28,7 +53,7 @@ const initializeClock = function () {
 const contextMenu = Menu.buildFromTemplate([
   {
     label: 'Settings',
-    click: openConfigurationWindow
+    click: openSettingsWindow
   },
   {
     type: 'separator'
@@ -44,3 +69,5 @@ app.on('ready', () => {
   tray.setContextMenu(contextMenu);
   initializeClock();
 });
+
+app.on('window-all-closed', () => {});
